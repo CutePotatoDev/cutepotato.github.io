@@ -1,0 +1,31 @@
+{% extends "layout/main.html" %}
+{% block content %}
+{% include "layout/header.html" %}
+<div style="position: relative; height: 100%">
+    <div id="container">
+        {% include "layout/menu.html" %}
+        <div id="content">
+            <h4>Templating</h4>
+                Jiinja template class for CherryPy.
+                <pre><code>class TemplateRender:
+    __instance = None
+
+    def __new__(cls, path):
+        if cls.__instance is None:
+            cls.__instance = super().__new__(cls)
+
+            cls._engine = jinja2.Environment(loader=jinja2.FileSystemLoader(path))
+
+        return cls.__instance
+
+    def render(self, template, *args, **kwargs):
+        template = self._engine.get_template(template)
+        return template.render(*args, **kwargs)
+
+    def errorPage(self, status, message, **kwargs):
+        return self.render("error.html", status=status, message=message, kwargs=kwargs)
+            </code></pre>
+        </div>
+    </div>
+</div>
+{% endblock %}

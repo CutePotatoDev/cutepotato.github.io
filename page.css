@@ -1,0 +1,94 @@
+html {
+    height: 100%;
+    overflow: clip;
+}
+
+body {
+    background-color: #fafafa;  /* #282923 */
+    color: #212121;
+    font-family: Consolas;
+    font-size: 15px;
+    height: auto;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 15vw;
+    right: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+#menu a {
+    text-decoration: none;
+}
+
+a:link {
+    color: #119294;
+}
+
+a:visited {
+    color: #063839;
+}
+
+h4 {
+    margin-top: 0.8rem;
+    margin-bottom: 0.8rem;
+}
+
+#header {
+    margin: 0.5rem 0rem 0.5rem 5rem;
+}
+
+#container {
+    display: flex;
+    margin-left: 0.5rem;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0
+}
+
+#menu {
+    width: min-content;
+    white-space: nowrap;
+}
+
+.menuelement {
+    color: #f8f8f2;
+    cursor: pointer;
+    display: inline;
+}
+
+#divider {
+    color: #737373;
+    width: 8px;
+    word-wrap: break-word;
+    margin-left: 1.5rem;
+    overflow: hidden;
+    height: 100%;
+}
+
+#content {
+    font-family: Helvetica;
+    line-height: 1.5;
+    margin-left: 1.5rem;
+    flex-basis: 100%;
+    overflow: auto
+}
+
+.hljs {
+    border-radius: 5px;
+    width: min-content;
+    background-color: #f2f2f2 !important;
+    margin: 1rem 0.5rem 1rem 0.5rem !important;
+    padding: 0.75rem !important;
+    font-size: 0.9rem;
+    margin: 0.5rem;
+}
+
+code {
+    background-color: #eaebec;
+    border-radius: 3px;
+    padding: 1px 4px;
+}
