@@ -6,22 +6,9 @@ html {
 body {
     background-color: #fafafa;
     color: #212121;
-    font-family: Consolas, monaco, monospace; 
-    font-size: 15px;
-    height: auto;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 15%;
-    right: 0;
-    display: flex;
-    flex-direction: column;
-}
-
-@media (max-width: 576px) {  
-    body {
-        left: 0;
-    }
+    font-family: Consolas, monaco, monospace !important; 
+    font-size: 15px !important;
+    height: 100%;
 }
 
 #menu a {
@@ -41,29 +28,22 @@ h4 {
     margin-bottom: 0.8rem;
 }
 
-#header {
-    margin: 0.5rem 0rem 0.5rem 5rem;
+.container-md {
+    padding-bottom: 0.75rem;
 }
 
-#container {
+#header {
+    margin: 0.5rem 0rem 0rem 5rem;
+}
+
+#menu-col {
     display: flex;
-    margin-left: 0.5rem;
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0
 }
 
 #menu {
     width: min-content;
     white-space: nowrap;
-}
-
-.menuelement {
-    color: #f8f8f2;
-    cursor: pointer;
-    display: inline;
+    line-height: initial !important;
 }
 
 #divider {
@@ -78,7 +58,6 @@ h4 {
 #content {
     font-family: Helvetica;
     line-height: 1.5;
-    margin-left: 1.5rem;
     flex-basis: 100%;
     overflow: auto
 }

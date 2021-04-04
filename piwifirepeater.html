@@ -2,24 +2,33 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <meta name="viewport" content="initial-scale=0.5">
 
         <title>cat potato_log.txt</title>
 
-        <link rel="stylesheet" href="./page.css"></link>
-        <link rel="stylesheet" href="./atelier-forest-light.css"></link>
-        <script type="text/javascript" src="./highlight.pack.js"></script>
+        <link rel="stylesheet" href="./static/page.css"></link>
+        <link rel="stylesheet" href="./static/atelier-forest-light.css"></link>
+        <link rel="stylesheet" href="./static/bootstrap.min.css"></link>
+
+        <script type="text/javascript" src="./static/highlight.pack.js"></script>
         <script>
             hljs.highlightAll()            
         </script>
     </head>
     <body>
-        
-<div id="header">potato_log.txt</div>
-<div>---------------------+--------------------------------</div>
-<div style="position: relative; height: 100%">
-    <div id="container">
-        <div id="menu">
+        <div class="container-md h-100">
+            <div class="row h-100">
+                <div class="col h-100">
+                    <div class="d-flex flex-column h-100">
+                        <div class="row">
+                            <div class="col text-nowrap">
+                                <div id="header">potato_log.txt</div>
+<div>--------------------+--------------------------------</div>
+                            </div>
+                        </div>
+                        <div class="row flex-grow-1 position-relative overflow-hidden">
+                            <div class="col-auto h-100" id="menu-col">
+                                <div id="menu">
     * <a href="./index.html">Home</a><br>
     * CherryPy<br>
     &nbsp;&nbsp;> <a href="./cpusefull.html">Usefull</a><br>
@@ -27,59 +36,62 @@
     &nbsp;&nbsp;> <a href="./piwifirepeater.html">WiFi repeater</a><br>
 </div>
 <div id="divider">
-    |||||||||||||||||||||||||||||||||||||||||||||||||||||||
+    ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||
 </div>
-        <div id="content">
-            <h4>Raspberry WiFi repeater.</h4>
+                            </div>
+                            <div class="col h-100 px-0 overflow-auto">
+                                <div id="content">
+                                    
+<h4>Raspberry WiFi repeater.</h4>
 
-            Found awesome description how setup WiFi repeater. Want save it for future usage. Also add some changes necessary for my.<br><br>
+Found awesome description how setup WiFi repeater. Want save it for future usage. Also add some changes necessary for my.<br><br>
 
-            Original source: <a href="https://raspberrypi.stackexchange.com/a/118877">https://raspberrypi.stackexchange.com/a/118877</a><br><br>
+Original source: <a href="https://raspberrypi.stackexchange.com/a/118877">https://raspberrypi.stackexchange.com/a/118877</a><br><br>
 
-            <p>
-                This is in addition to the <a href="https://raspberrypi.stackexchange.com/a/89804/126729">Ingo's outstanding description</a>. Here we would like to use the default<br>
-                networking system of Raspbian (assuming to have previously configured it) rather than replacing it<br>
-                with <a href="https://wiki.archlinux.org/index.php/systemd-networkd" rel="nofollow noreferrer">systemd-networkd</a>.
-            </p>
+<p>
+    This is in addition to the <a href="https://raspberrypi.stackexchange.com/a/89804/126729">Ingo's outstanding description</a>. Here we would like to use the default<br>
+    networking system of Raspbian (assuming to have previously configured it) rather than replacing it<br>
+    with <a href="https://wiki.archlinux.org/index.php/systemd-networkd" rel="nofollow noreferrer">systemd-networkd</a>.
+</p>
 
-            <p>
-                The standard networking mode to configure TCP/IP in Raspbian/Raspberry Pi OS is mentioned in the<br>
-                <a href="https://www.raspberrypi.org/documentation/configuration/" rel="nofollow noreferrer">related documentation</a>. At the time of writing, <a href="https://www.raspberrypi.org/documentation/configuration/tcpip/README.md" rel="nofollow noreferrer">dhcpcd is used</a> (<em>dhcpcd5</em> package). This mode replaced<br>
-                the former <a href="https://wiki.debian.org/NetworkConfiguration" rel="nofollow noreferrer">Debian Networking</a> (<em>ifupdown</em> package), where the configuration was done in <a href="https://manpages.debian.org/testing/ifupdown/interfaces.5.en.html" rel="nofollow noreferrer">/etc/network/interfaces</a>.<br>
-                The <a href="https://www.raspberrypi.org/documentation/" rel="nofollow noreferrer">documentation</a> also describes <a href="https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md" rel="nofollow noreferrer">how to setup a Wi-Fi client/Wi-Fi station</a> via <a href="https://wiki.archlinux.org/index.php/wpa_supplicant" rel="nofollow noreferrer">wpa_supplicant</a><br>
-                by configuring <a href="https://w1.fi/cgit/hostap/plain/wpa_supplicant/wpa_supplicant.conf" rel="nofollow noreferrer">/etc/wpa_supplicant/wpa_supplicant.conf</a> to connect the Raspberry Pi<br>
-                to an existing wireless LAN on its default <em>wlan0</em> interface; alternatively, it describes how to set up a<br>
-                <a href="https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md" rel="nofollow noreferrer">routed wireless access point</a> on the same <em>wlan0</em> interface (instead of the Wi-Fi station). We will use<br>
-                <a href="https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md" rel="nofollow noreferrer">this last document</a> as a reference, changing it in just a few points to configure the same wireless<br>board to enable a <em>wlan0</em> interface (Wi-Fi Client/Station, connected to another wifi network or internet<br>router) as well as a Wi-Fi Access Point named <em>uap0</em> (e.g., to define a wlan repeater):
-            </p>
-                
-            <ul>
-                <li>
-                    we create a copy of the <em>hostapd</em> service configuration, adding <em>ExecStartPre</em> and <em>ExecStopPost</em><br>
-                    settings to add/remove the "type AP" virtual interface via <em>iw</em>; we prefer using this rather than<br>
-                    adding a rule in <a href="https://wiki.debian.org/udev" rel="nofollow noreferrer">/etc/udev/rules.d</a>;
-                </li>
-                <li>
-                    we use <em>dhcpcd</em> to set a static IP address to the created interface, also modifying the <em>wlan0</em><br>
-                    configuration, to act as a DHCP client (without static addressing)
-                </li>
-            </ul>
+<p>
+    The standard networking mode to configure TCP/IP in Raspbian/Raspberry Pi OS is mentioned in the<br>
+    <a href="https://www.raspberrypi.org/documentation/configuration/" rel="nofollow noreferrer">related documentation</a>. At the time of writing, <a href="https://www.raspberrypi.org/documentation/configuration/tcpip/README.md" rel="nofollow noreferrer">dhcpcd is used</a> (<em>dhcpcd5</em> package). This mode replaced<br>
+    the former <a href="https://wiki.debian.org/NetworkConfiguration" rel="nofollow noreferrer">Debian Networking</a> (<em>ifupdown</em> package), where the configuration was done in <a href="https://manpages.debian.org/testing/ifupdown/interfaces.5.en.html" rel="nofollow noreferrer">/etc/network/interfaces</a>.<br>
+    The <a href="https://www.raspberrypi.org/documentation/" rel="nofollow noreferrer">documentation</a> also describes <a href="https://www.raspberrypi.org/documentation/configuration/wireless/wireless-cli.md" rel="nofollow noreferrer">how to setup a Wi-Fi client/Wi-Fi station</a> via <a href="https://wiki.archlinux.org/index.php/wpa_supplicant" rel="nofollow noreferrer">wpa_supplicant</a><br>
+    by configuring <a href="https://w1.fi/cgit/hostap/plain/wpa_supplicant/wpa_supplicant.conf" rel="nofollow noreferrer">/etc/wpa_supplicant/wpa_supplicant.conf</a> to connect the Raspberry Pi<br>
+    to an existing wireless LAN on its default <em>wlan0</em> interface; alternatively, it describes how to set up a<br>
+    <a href="https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md" rel="nofollow noreferrer">routed wireless access point</a> on the same <em>wlan0</em> interface (instead of the Wi-Fi station). We will use<br>
+    <a href="https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md" rel="nofollow noreferrer">this last document</a> as a reference, changing it in just a few points to configure the same wireless<br>board to enable a <em>wlan0</em> interface (Wi-Fi Client/Station, connected to another wifi network or internet<br>router) as well as a Wi-Fi Access Point named <em>uap0</em> (e.g., to define a wlan repeater):
+</p>
+    
+<ul>
+    <li>
+        we create a copy of the <em>hostapd</em> service configuration, adding <em>ExecStartPre</em> and <em>ExecStopPost</em><br>
+        settings to add/remove the "type AP" virtual interface via <em>iw</em>; we prefer using this rather than<br>
+        adding a rule in <a href="https://wiki.debian.org/udev" rel="nofollow noreferrer">/etc/udev/rules.d</a>;
+    </li>
+    <li>
+        we use <em>dhcpcd</em> to set a static IP address to the created interface, also modifying the <em>wlan0</em><br>
+        configuration, to act as a DHCP client (without static addressing)
+    </li>
+</ul>
 
-            <p>
-                As DNS forwarder and DHCP Server, we will keep <a href="https://wiki.debian.org/dnsmasq" rel="nofollow noreferrer">dnsmasq</a>, used in the previously mentioned<br>
-                Raspberry configuration. We will also keep <a href="https://tools.ietf.org/html/rfc6762" rel="nofollow noreferrer">DNS Multicast</a> (<em>libnss-mdns</em>) and Zeroconf/Apple Bonjour<br>
-                (<em>avahi-daemon</em>). We will not use <em>systemd-resolved</em>.
-            </p>
-                
-            <p>
-                Noticeably, we suppose that the older <a href="https://manpages.debian.org/buster/ifupdown/index.html" rel="nofollow noreferrer">ifupdown</a> mode is not used, meaning that <a href="https://manpages.debian.org/buster/ifupdown/interfaces.5.en.html" rel="nofollow noreferrer">/etc/network/interfaces</a><br>
-                is left to its default configuration, with no stanzas defined, apart from <code>source-directory<br>
-                /etc/network/interfaces.d</code>, with any other note or statement commented out through an initial <code>#</code>,<br>and that <em>/etc/network/interfaces.d</em> directory is left empty. We also assume that <code>sudo systemctl<br>status dhcpcd</code> returns that the service is active.
-            </p>
-                
-            <p>Example for this setup:</p>
+<p>
+    As DNS forwarder and DHCP Server, we will keep <a href="https://wiki.debian.org/dnsmasq" rel="nofollow noreferrer">dnsmasq</a>, used in the previously mentioned<br>
+    Raspberry configuration. We will also keep <a href="https://tools.ietf.org/html/rfc6762" rel="nofollow noreferrer">DNS Multicast</a> (<em>libnss-mdns</em>) and Zeroconf/Apple Bonjour<br>
+    (<em>avahi-daemon</em>). We will not use <em>systemd-resolved</em>.
+</p>
+    
+<p>
+    Noticeably, we suppose that the older <a href="https://manpages.debian.org/buster/ifupdown/index.html" rel="nofollow noreferrer">ifupdown</a> mode is not used, meaning that <a href="https://manpages.debian.org/buster/ifupdown/interfaces.5.en.html" rel="nofollow noreferrer">/etc/network/interfaces</a><br>
+    is left to its default configuration, with no stanzas defined, apart from <code>source-directory<br>
+    /etc/network/interfaces.d</code>, with any other note or statement commented out through an initial <code>#</code>,<br>and that <em>/etc/network/interfaces.d</em> directory is left empty. We also assume that <code>sudo systemctl<br>status dhcpcd</code> returns that the service is active.
+</p>
+    
+<p>Example for this setup:</p>
 
-            <pre><code>
+<pre><code>
 (dhcp 192.168.1.3 from router)  +----------------------+   (192.168.1.1
                              \  |                      |  / +DHCP server)
                  wifi        (eth0)      wifi uplink   | /
@@ -87,16 +99,16 @@ mobile-phone &lt;~.~.~.~.~&gt; (ap0)RPi(wlan0) &lt;.~.~.~.~.&gt; router &lt;─�
             ╲             ╱          ╲                        wan
 (dhcp 192.168.50.50 (192.168.50.1   (dhcp 192.168.1.2
           from RPi) +DHCP server)    from router)
-            </code></pre>
+</code></pre>
 
-            <p>Install <em>dnsmasq</em> and <em>hostapd</em> (like in Raspberry’s documentation):</p>
+<p>Install <em>dnsmasq</em> and <em>hostapd</em> (like in Raspberry’s documentation):</p>
 
-            <pre><code class="bash">sudo -Es
+<pre><code class="bash">sudo -Es
 apt install -y dnsmasq hostapd</code></pre>
 
-            <p>Configure <em>hostapd</em> for the Access Point:</p>
+<p>Configure <em>hostapd</em> for the Access Point:</p>
 
-            <pre><code>test -f /etc/hostapd/hostapd.conf || cat &gt; /etc/hostapd/hostapd.conf &lt;&lt;\EOF
+<pre><code>test -f /etc/hostapd/hostapd.conf || cat &gt; /etc/hostapd/hostapd.conf &lt;&lt;\EOF
 ctrl_interface=/var/run/hostapd
 driver=nl80211
 country_code=IT # Use your country code
@@ -114,47 +126,47 @@ EOF
 chmod 600 /etc/hostapd/hostapd.conf
 # edit /etc/hostapd/hostapd.conf and verify it</code></pre>
 
-            <p>Test creation and deletion of <em>uap0</em> virtual device on <em>wlan0</em>:</p>
+<p>Test creation and deletion of <em>uap0</em> virtual device on <em>wlan0</em>:</p>
 
-            <pre><code>/sbin/iw dev wlan0 interface add uap0 type __ap
+<pre><code>/sbin/iw dev wlan0 interface add uap0 type __ap
 /sbin/iw dev uap0 del</code></pre>
 
-            <p>
-                No error should be produced.
-                If the first command fails with <em>Device or resource busy (-16)</em>, it means<br>
-                that the device driver does not allow creating additional "Type AP" interfaces, which are busy for other<br>
-                services (e.g., an <em>AP</em> or a <em>P2P-GO</em> group is already active and has to be deleted to allow this new<br>
-                service to be activated).
-            </p>
+<p>
+    No error should be produced.
+    If the first command fails with <em>Device or resource busy (-16)</em>, it means<br>
+    that the device driver does not allow creating additional "Type AP" interfaces, which are busy for other<br>
+    services (e.g., an <em>AP</em> or a <em>P2P-GO</em> group is already active and has to be deleted to allow this new<br>
+    service to be activated).
+</p>
 
-            <p>Check this command:</p>
+<p>Check this command:</p>
 
-            <pre><code>iw list | grep "Supported interface modes" -A 8</code></pre>
+<pre><code>iw list | grep "Supported interface modes" -A 8</code></pre>
 
-            <p>
-                It should return one line including <em>AP</em>. If only <em>STA</em> and <em>managed</em> are returned, the device driver of the<br>
-                board (or the hw itself) does not allow creating an AP interface. Output of the Raspberry Pi 4:
-            </p>
+<p>
+    It should return one line including <em>AP</em>. If only <em>STA</em> and <em>managed</em> are returned, the device driver of the<br>
+    board (or the hw itself) does not allow creating an AP interface. Output of the Raspberry Pi 4:
+</p>
 
-            <pre><code>Supported interface modes:
+<pre><code>Supported interface modes:
     * IBSS
     * managed
     * AP
     * P2P-client
     * P2P-GO
     * P2P-device
-            </code></pre>
+</code></pre>
 
-            <p>Use this command to check the allowed combination options:</p>
+<p>Use this command to check the allowed combination options:</p>
 
-            <pre><code>iw list | grep "valid interface combinations" -A 8</code></pre>
+<pre><code>iw list | grep "valid interface combinations" -A 8</code></pre>
 
-            <p>
-                Every line contains alternative combinations. With the Broadcom BCM2711 SoC included in a<br>
-                Raspberry Pi 4 B, I get the following:
-            </p>
+<p>
+    Every line contains alternative combinations. With the Broadcom BCM2711 SoC included in a<br>
+    Raspberry Pi 4 B, I get the following:
+</p>
 
-            <pre><code>valid interface combinations:
+<pre><code>valid interface combinations:
          * #{ managed } &lt;= 1, #{ P2P-device } &lt;= 1, #{ P2P-client, P2P-GO } &lt;= 1,
            total &lt;= 3, #channels &lt;= 2
          * #{ managed } &lt;= 1, #{ AP } &lt;= 1, #{ P2P-client } &lt;= 1, #{ P2P-device } &lt;= 1,
@@ -163,16 +175,16 @@ Device supports scan flush.
 Device supports randomizing MAC-addr in sched scans.
 Supported extended features:
         * [ 4WAY_HANDSHAKE_STA_PSK ]: 4-way handshake with PSK in station mode
-            </code></pre>
+</code></pre>
 
-            <p>It means that not more than one AP or P2P-GO interface can be configured at the same time.</p>
+<p>It means that not more than one AP or P2P-GO interface can be configured at the same time.</p>
 
-            <p>
-                If the test to create and delete the <em>uap0</em> virtual device succeeds, you can go on, starting the <em>uap0</em> AP<br>
-                virtual interface on <em>wlan0</em>:
-            </p>
+<p>
+    If the test to create and delete the <em>uap0</em> virtual device succeeds, you can go on, starting the <em>uap0</em> AP<br>
+    virtual interface on <em>wlan0</em>:
+</p>
 
-            <pre><code>SYSTEMD_EDITOR=tee systemctl edit --force --full uap@.service &lt;&lt;\EOF
+<pre><code>SYSTEMD_EDITOR=tee systemctl edit --force --full uap@.service &lt;&lt;\EOF
 
 [Unit]
 Description=IEEE 802.11 %p%i AP on wlan%i with hostapd
@@ -198,56 +210,56 @@ systemctl stop hostapd # if the default hostapd service was active before
 systemctl disable hostapd # if the default hostapd service was enabled before
 systemctl enable uap@0.service
 rfkill unblock wlan
-            </code></pre>
+</code></pre>
 
-            <p>You might possibly want to manually edit this in the future, with:</p>
+<p>You might possibly want to manually edit this in the future, with:</p>
 
-            <pre><code>sudo -Es
+<pre><code>sudo -Es
 #export SYSTEMD_EDITOR=vi # uncomment this if you like "vi", otherwise "edit" will be used
 export SYSTEMD_EDITOR=vi systemctl edit --full uap@.service
 exit</code></pre>
 
-            <p>
-                Some configurations (especially related to the old <em>ifupdown</em> mode) consider adding a static rule in<br>
-                <em>/etc/udev/rules.d</em> to bring up the <em>uap0</em> AP interface, like <code>ACTION=="add", SUBSYSTEM=="ieee80211",<br>
-                KERNEL=="phy0", RUN+="/sbin/iw phy %k interface add uap0 type __ap"</code>; as we are parametrizing<br>
-                this with the <code>ExecStartPre</code> and <code>ExecStopPost</code> statements of the <code>uap@</code> service definition, it is<br>
-                important that your configuration does not include such rule in <em>/etc/udev/rules.d</em>.
-            </p>
+<p>
+    Some configurations (especially related to the old <em>ifupdown</em> mode) consider adding a static rule in<br>
+    <em>/etc/udev/rules.d</em> to bring up the <em>uap0</em> AP interface, like <code>ACTION=="add", SUBSYSTEM=="ieee80211",<br>
+    KERNEL=="phy0", RUN+="/sbin/iw phy %k interface add uap0 type __ap"</code>; as we are parametrizing<br>
+    this with the <code>ExecStartPre</code> and <code>ExecStopPost</code> statements of the <code>uap@</code> service definition, it is<br>
+    important that your configuration does not include such rule in <em>/etc/udev/rules.d</em>.
+</p>
 
-            <p>Now we setup <em>wpa_supplicant</em> for client connections.</p>
+<p>Now we setup <em>wpa_supplicant</em> for client connections.</p>
 
-            <p>
-                We need to update <a href="https://manpages.debian.org/buster/dhcpcd5/dhcpcd.8.en.html" rel="nofollow noreferrer">dhcpcd</a> (the default a DHCP client) by editing <a href="https://manpages.debian.org/buster/dhcpcd5/dhcpcd.conf.5.en.html" rel="nofollow noreferrer">/etc/dhcpcd.conf</a>, adding the<br>
-                following to the end (these settings replace the configuration suggested in Raspberry’s site, which<br>
-                defined a static address to <em>wlan0</em> instead of a DHCP Client; ref. "Define the wireless interface IP<br>configuration"):
-            </p>
+<p>
+    We need to update <a href="https://manpages.debian.org/buster/dhcpcd5/dhcpcd.8.en.html" rel="nofollow noreferrer">dhcpcd</a> (the default a DHCP client) by editing <a href="https://manpages.debian.org/buster/dhcpcd5/dhcpcd.conf.5.en.html" rel="nofollow noreferrer">/etc/dhcpcd.conf</a>, adding the<br>
+    following to the end (these settings replace the configuration suggested in Raspberry’s site, which<br>
+    defined a static address to <em>wlan0</em> instead of a DHCP Client; ref. "Define the wireless interface IP<br>configuration"):
+</p>
 
-            <pre><code>interface wlan0 # these two lines are not strictly needed, as wlan0 uses the default configuration dhcp
+<pre><code>interface wlan0 # these two lines are not strictly needed, as wlan0 uses the default configuration dhcp
 
 interface uap0 # this defines static addressing to uap0 and disables wpa_supplicant for this interface
     static ip_address=192.168.50.1/24
     ipv4only
     nohook wpa_supplicant</code></pre>
 
-            <p>
-                Comparing with the description in Raspberry’s site, notice that, other than removing the static<br>
-                address, we will not use <code>nohook wpa_supplicant</code> under <em>interface wlan0</em>, so that <em>wpa_supplicant</em> is<br>
-                activated by a default <em>dhcpcd</em> hook.
-            </p>
+<p>
+    Comparing with the description in Raspberry’s site, notice that, other than removing the static<br>
+    address, we will not use <code>nohook wpa_supplicant</code> under <em>interface wlan0</em>, so that <em>wpa_supplicant</em> is<br>
+    activated by a default <em>dhcpcd</em> hook.
+</p>
 
-            <p>
-                To verify this hook, check files included in the <a href="https://manpages.debian.org/buster/dhcpcd5/dhcpcd-run-hooks.8.en.html" rel="nofollow noreferrer"><em>/lib/dhcpcd/dhcpcd-hooks</em> directory</a>: one of this is <em>10-<br>
-                wpa_supplicant</em>, which is the responsible for activating <em>wpa_supplicant</em> on the new interface. It is<br>
-                automatically run when the new interface is discovered by <a href="https://manpages.debian.org/buster/dhcpcd5/dhcpcd.8.en.html" rel="nofollow noreferrer">dhcpcd</a>.
-            </p>
+<p>
+    To verify this hook, check files included in the <a href="https://manpages.debian.org/buster/dhcpcd5/dhcpcd-run-hooks.8.en.html" rel="nofollow noreferrer"><em>/lib/dhcpcd/dhcpcd-hooks</em> directory</a>: one of this is <em>10-<br>
+    wpa_supplicant</em>, which is the responsible for activating <em>wpa_supplicant</em> on the new interface. It is<br>
+    automatically run when the new interface is discovered by <a href="https://manpages.debian.org/buster/dhcpcd5/dhcpcd.8.en.html" rel="nofollow noreferrer">dhcpcd</a>.
+</p>
 
-            <p>
-                The file used by <em>wpa_supplicant</em> (Wi-Fi Station agent) is the default one:  <em>/etc/wpa_supplicant/<br>wpa_supplicant.conf</em>. We assume that it is already configured and working; otherwise you can use a<br>
-                template to configure it:
-            </p>
+<p>
+    The file used by <em>wpa_supplicant</em> (Wi-Fi Station agent) is the default one:  <em>/etc/wpa_supplicant/<br>wpa_supplicant.conf</em>. We assume that it is already configured and working; otherwise you can use a<br>
+    template to configure it:
+</p>
 
-            <pre><code>test -f /etc/wpa_supplicant/wpa_supplicant.conf || cat &gt;/etc/wpa_supplicant/wpa_supplicant.conf &lt;&lt;\EOF
+<pre><code>test -f /etc/wpa_supplicant/wpa_supplicant.conf || cat &gt;/etc/wpa_supplicant/wpa_supplicant.conf &lt;&lt;\EOF
 ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
 update_config=1
 country=IT
@@ -264,31 +276,31 @@ chmod 600 /etc/wpa_supplicant/wpa_supplicant.conf
 
 systemctl disable wpa_supplicant.service  # not used, as the agent is hooked by dhcpcd</code></pre>
 
-            <p>We can then follow Raspberry’s documentation to enable routing and IP masquerading:</p>
+<p>We can then follow Raspberry’s documentation to enable routing and IP masquerading:</p>
 
-            <pre><code>sudo DEBIAN_FRONTEND=noninteractive apt install -y netfilter-persistent iptables-persistent</code></pre>
+<pre><code>sudo DEBIAN_FRONTEND=noninteractive apt install -y netfilter-persistent iptables-persistent</code></pre>
 
-            <p>Create a file using the following command, with the contents below:</p>
+<p>Create a file using the following command, with the contents below:</p>
 
-            <pre><code>test -f /etc/sysctl.d/routed-ap.conf || cat &gt;/etc/sysctl.d/routed-ap.conf &lt;&lt;\EOF
+<pre><code>test -f /etc/sysctl.d/routed-ap.conf || cat &gt;/etc/sysctl.d/routed-ap.conf &lt;&lt;\EOF
 # https://www.raspberrypi.org/documentation/configuration/wireless/access-point-routed.md
 # Enable IPv4 routing
 net.ipv4.ip_forward=1
 EOF
 # edit /etc/sysctl.d/routed-ap.conf and verify it</code></pre>
 
-            <p>Updating the firewall rules:</p>
+<p>Updating the firewall rules:</p>
 
-            <pre><code># Add firewall rules
+<pre><code># Add firewall rules
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 sudo iptables -t nat -A POSTROUTING -o wlan0 -j MASQUERADE
 sudo iptables -A FORWARD -i wlan0 -o uap0 -m state --state RELATED,ESTABLISHED -j ACCEPT
 sudo iptables -A FORWARD -i uap0 -o wlan0 -j ACCEPT
 sudo netfilter-persistent save</code></pre>
 
-            <p><em>dnsmasq</em> configuration follows Raspberry’s example:</p>
+<p><em>dnsmasq</em> configuration follows Raspberry’s example:</p>
 
-            <pre><code>cat &gt;&gt; /etc/dnsmasq.conf &lt;&lt;\EOF
+<pre><code>cat &gt;&gt; /etc/dnsmasq.conf &lt;&lt;\EOF
 
 # disables dnsmasq reading any other files like /etc/resolv.conf for nameservers
 no-resolv
@@ -304,56 +316,60 @@ EOF
 
 # edit /etc/dnsmasq.conf and verify it</code></pre>
 
-            <p>The configuration is finished. You must reboot before testing.</p>
+<p>The configuration is finished. You must reboot before testing.</p>
 
-            <pre><code>reboot</code></pre>
+<pre><code>reboot</code></pre>
 
-            <p>
-                The <em>systemctl</em> command on <em>uap@0.service</em> allows disabling, enabling and monitoring the AP function;<br>
-                for instance, to stop AP, to remove the virtual interface and to free up device driver resources, you can issue:
-            </p>
-            
-            <pre><code>sudo systemctl stop uap@0</code></pre>
+<p>
+    The <em>systemctl</em> command on <em>uap@0.service</em> allows disabling, enabling and monitoring the AP function;<br>
+    for instance, to stop AP, to remove the virtual interface and to free up device driver resources, you can issue:
+</p>
 
-            <p>To start again the service:</p>
+<pre><code>sudo systemctl stop uap@0</code></pre>
 
-            <pre><code>sudo systemctl stop dhcpcd &amp;&amp; sudo systemctl start uap@0 &amp;&amp; sudo systemctl start dhcpcd</code></pre>
+<p>To start again the service:</p>
 
-            <p>
-                Notice that in both cases <em>wlan0</em> link goes down for some seconds and then goes up again; an active<br>
-                TCP connection on <em>wlan0</em> is not lost anyway.
-            </p>
+<pre><code>sudo systemctl stop dhcpcd &amp;&amp; sudo systemctl start uap@0 &amp;&amp; sudo systemctl start dhcpcd</code></pre>
 
-            <p>
-                Temporarily stopping <em>dhcpcd</em> before starting up <em>uap0</em> is needed to also stop <em>wpa_supplicant</em> (hooked<br>
-                by <em>dhcpcd</em>); this is in order to avoid the Broadcom driver issue "failed to enable fw supplicant" (for<br>
-                some weird reason the device driver attempts to reload an already loaded firmware supplicant for this<br>
-                interface).
-            </p>
+<p>
+    Notice that in both cases <em>wlan0</em> link goes down for some seconds and then goes up again; an active<br>
+    TCP connection on <em>wlan0</em> is not lost anyway.
+</p>
 
-            <p>
-                If <em>wlan1</em> is configured in place of the default <em>wlan0</em> Wi-Fi function of the Raspberry Pi (e.g., a USB<br>
-                wireless dongle supporting access point mode), replace <em>wlan0</em> with <em>wlan1</em>, <em>uap@0</em><br>
-                with <em>uap@1</em>, <em>uap0</em> with <em>uap1</em>  every time "<em>wlan0</em>", "<em>uap@0</em>" and "<em>uap0</em>" are mentioned.
-            </p>
+<p>
+    Temporarily stopping <em>dhcpcd</em> before starting up <em>uap0</em> is needed to also stop <em>wpa_supplicant</em> (hooked<br>
+    by <em>dhcpcd</em>); this is in order to avoid the Broadcom driver issue "failed to enable fw supplicant" (for<br>
+    some weird reason the device driver attempts to reload an already loaded firmware supplicant for this<br>
+    interface).
+</p>
 
-            <p>
-                To use a different root name than <em>uap</em> for the AP interface (e.g., referring to <em>uap0</em>), change it with the<br>
-                new name every time it is mentioned.
-            </p>
+<p>
+    If <em>wlan1</em> is configured in place of the default <em>wlan0</em> Wi-Fi function of the Raspberry Pi (e.g., a USB<br>
+    wireless dongle supporting access point mode), replace <em>wlan0</em> with <em>wlan1</em>, <em>uap@0</em><br>
+    with <em>uap@1</em>, <em>uap0</em> with <em>uap1</em>  every time "<em>wlan0</em>", "<em>uap@0</em>" and "<em>uap0</em>" are mentioned.
+</p>
 
-            <p>
-                <a href="https://www.raspberrypi.org/documentation/" rel="nofollow noreferrer">Raspberry’s documentation</a> describes how to <a href="https://www.raspberrypi.org/documentation/configuration/wireless/access-point-bridged.md" rel="nofollow noreferrer">set up a Raspberry Pi as a bridged wireless access point</a>.<br>
-                The Ethernet interface is used to connect the Raspberry to the upstream router (e.g., provided<br>
-                with Internet access and featuring a DHCP server). In such configuration, the Raspberry Pi itself can<br>
-                be accessed by its <em>br0</em> wireless interface, but not by its <em>Ethernet</em> interface, which participates to the<br>
-                bridging function and is not assigned an IP address; also, to avoid resetting active sessions, the<br>
-                Ethernet interface must not be disconnected from the upstream router. <a href="https://raspberrypi.stackexchange.com/questions/81486/raspberry-pi-wifi-to-ethernet-bridge-for-a-server/81518#81518">As described by Ingo</a>, it is not<br>
-                possible to bridge the Wi-Fi client connections to the upstream router.
-            </p>
+<p>
+    To use a different root name than <em>uap</em> for the AP interface (e.g., referring to <em>uap0</em>), change it with the<br>
+    new name every time it is mentioned.
+</p>
+
+<p>
+    <a href="https://www.raspberrypi.org/documentation/" rel="nofollow noreferrer">Raspberry’s documentation</a> describes how to <a href="https://www.raspberrypi.org/documentation/configuration/wireless/access-point-bridged.md" rel="nofollow noreferrer">set up a Raspberry Pi as a bridged wireless access point</a>.<br>
+    The Ethernet interface is used to connect the Raspberry to the upstream router (e.g., provided<br>
+    with Internet access and featuring a DHCP server). In such configuration, the Raspberry Pi itself can<br>
+    be accessed by its <em>br0</em> wireless interface, but not by its <em>Ethernet</em> interface, which participates to the<br>
+    bridging function and is not assigned an IP address; also, to avoid resetting active sessions, the<br>
+    Ethernet interface must not be disconnected from the upstream router. <a href="https://raspberrypi.stackexchange.com/questions/81486/raspberry-pi-wifi-to-ethernet-bridge-for-a-server/81518#81518">As described by Ingo</a>, it is not<br>
+    possible to bridge the Wi-Fi client connections to the upstream router.
+</p>
+    
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-
     </body>
 </html>
