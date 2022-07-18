@@ -1,0 +1,37 @@
+{% extends "layout/main.html" %}
+
+{% block armenu %}
+&nbsp;&nbsp;> <a href="/ar/exam.html">Examination</a><br>
+&nbsp;&nbsp;> <a href="/ar/swl.html">Listening</a><br>
+{% endblock %}
+
+{% block content %}
+<script>
+    function addRow(time, callsign, countrycode, frequency, comment) {
+        let row = `
+            <tr>
+                <td class="py-1 col-2">${time}</td>
+                <td class="py-1 col-1"><div class="d-inline-block" style="width: 3.1rem">${callsign}</div> <img src="/static/flags/${countrycode}.png" class="img-fluid mb-1"></td>
+                <td class="py-1 col-1">${frequency}</td>
+                <td class="py-1 col-8">${comment}</td>
+            </tr>
+        `
+        document.getElementById("datatable").insertAdjacentHTML("afterbegin", row);
+    }
+
+    function loadTable(data) {
+        for (let row of data.list) {
+            let countrycode = Object.keys(data.countrymap).find(key => data.countrymap[key].find(value => row.callsign.startsWith(value)))
+            addRow(row.time, row.callsign, countrycode, row.frequency, row.comment)
+        }
+    }
+
+    fetch("swllog.json").then(resp => resp.json()).then(json => loadTable(json));
+</script>
+
+<table class="table table-hover">
+    <tbody id="datatable">
+
+    </tbody>
+</table>
+{% endblock %}

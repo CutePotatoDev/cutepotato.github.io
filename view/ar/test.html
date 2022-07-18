@@ -1,0 +1,147 @@
+{% extends "layout/main.html" %}
+
+{% block armenu %}
+&nbsp;&nbsp;> <a href="/ar/exam.html">Examination</a><br>
+&nbsp;&nbsp;> <a href="/ar/swl.html">Listening</a><br>
+{% endblock %}
+
+{% block content %}
+    <script>
+        function cclick(elm) {
+            let parent = elm.parentElement.parentElement;
+
+            for (let element of parent.getElementsByTagName("input")) {
+                if (elm != element) element.checked = false;
+            }
+        }
+
+        function qadd(question, a, pic) {
+            let rnr = Math.random().toString(36).slice(2, 9);
+
+            let qtext = `
+                <div class="row mb-2">
+                    <div class="col mt-2">
+                        <div class="fw-semibold">${question}</div>
+                        <div class="form-check mb-0 ms-1">
+                            <input class="form-check-input" type="checkbox" value="" id="${rnr}1" onchange="cclick(this)">
+                            <label class="form-check-label" for="${rnr}1">${a[0].key}</label>
+                        </div>
+                        <div class="form-check mb-0 ms-1">
+                            <input class="form-check-input" type="checkbox" value="" id="${rnr}2" onchange="cclick(this)">
+                            <label class="form-check-label" for="${rnr}2">${a[1].key}</label>
+                        </div>
+                        <div class="form-check mb-0 ms-1">
+                            <input class="form-check-input" type="checkbox" value="" id="${rnr}3" onchange="cclick(this)">
+                            <label class="form-check-label" for="${rnr}3">${a[2].key}</label>
+                        </div>
+                        ${ pic ? `<img src="/ar/test/${pic}.png" class="img-fluid" style="max-width: 30%">` : ''}
+                    </div>
+                </div>
+            `
+            document.getElementById("qlist").insertAdjacentHTML("afterbegin", qtext);
+        }
+
+        var qdata = undefined
+        var qanswers = {};
+        var qcount = undefined;
+        var qreq = undefined;
+
+        function qgen(data) {
+            qcount = data.count;
+            qreq = data.correct;
+
+            let questions = data.questions.sort((a, b) => 0.5 - Math.random());
+
+            for (let i = data.count; i > 0; i--) {
+                let question = questions[i - 1];
+
+                let mixa = question.a.sort((a, b) => 0.5 - Math.random());
+                qadd(i + ". " + question.q, mixa, question.p);
+
+                for (let a in mixa) {
+                    if (mixa[a].correct) {
+                        qanswers[i] = parseInt(a);
+                        break;
+                    }
+                }
+            }
+        }
+
+        function check() {
+            let questions = document.getElementById("qlist").getElementsByClassName("row");
+            let failures = [];
+
+
+            for (let qid = 0; qid < questions.length; qid++) {
+                let noanswer = true;
+                let checks = questions[qid].getElementsByTagName("input");
+
+                questions[qid].classList.remove("form-control", "is-invalid")
+
+                for (let aid = 0; aid < checks.length; aid++) {
+                    if (checks[aid].checked) {
+                        noanswer = false;
+                        if (aid !== qanswers[qid + 1]) {
+                            failures.push(qid + 1)
+                            questions[qid].classList.add("form-control", "is-invalid")
+                        }
+                    }
+                }
+
+                if (noanswer) {
+                    failures.push(qid + 1)
+                    questions[qid].classList.add("form-control", "is-invalid")
+                }
+            }
+
+            document.getElementById("answerincorect").innerHTML = failures.join(", ");
+            document.getElementById("answerresult").innerHTML = (qcount - failures.length) + " iš " + qcount;
+
+            if ((qcount - failures.length) >= qreq) {
+                document.getElementById("answerok").classList.remove("d-none");
+                document.getElementById("answernok").classList.add("d-none");
+            } else {
+                document.getElementById("answerok").classList.add("d-none");
+                document.getElementById("answernok").classList.remove("d-none");
+            }
+        }
+
+        function refresh() {
+            var qanswers = {};
+            document.getElementById("qlist").innerHTML = "";
+            qgen(qdata);
+        }
+
+
+        fetch("/ar/test/questions.json").then(resp => resp.json()).then(json => { qdata = json; qgen(qdata)});
+    </script>
+
+    <div id="testscroll" class="h-100 ps-3" style="overflow-x: hidden; overflow-y: auto">
+        <div id="qlist"></div>
+        <button type="button" class="btn btn-primary mt-4 mb-3" onclick="check()" data-toggle="modal" data-target="#ansvermodal">Pateikti</button>
+        <button type="button" class="btn btn-secondary mt-4 mb-3 ms-2" onclick="refresh()">Naujas testas</button>
+    </div>
+
+    <div class="modal" id="ansvermodal" tabindex="-1" aria-labelledby="answerlabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title " id="answerlabel">
+                        <div class="fw-semibold text-success" id="answerok">Išlaikyta</div>
+                        <div class="fw-semibold text-danger d-none" id="answernok">Neišlaikyta</div>
+                    </h5>
+                    <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    Rezultatas: <div class="d-inline" id="answerresult"></div></br>
+                    Klaidingi atsakymai: <div class="d-inline" id="answerincorect"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="/static/bootstrap.min.js"></script>
+    <script>new SimpleBar(document.getElementById("testscroll"))</script>
+{% endblock %}
+
+

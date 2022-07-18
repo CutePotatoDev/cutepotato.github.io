@@ -77,3 +77,11 @@ code {
     border-radius: 3px;
     padding: 1px 4px;
 }
+
+#datatable {
+    background-color: #fafafa;
+    color: #212121;
+    font-family: Consolas, monaco, monospace !important; 
+    font-size: 15px !important;
+    height: 100%;
+}
