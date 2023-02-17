@@ -99,7 +99,10 @@
             for (let i = data.count; i > 0; i--) {
                 let question = questions[i - 1];
 
-                let mixa = question.a.sort((a, b) => 0.5 - Math.random());
+                // Disable answers mixing.
+                //let mixa = question.a.sort((a, b) => 0.5 - Math.random());
+                let mixa = question.a
+
                 qadd(i + ". " + question.q, mixa, question.p);
 
                 for (let a in mixa) {
