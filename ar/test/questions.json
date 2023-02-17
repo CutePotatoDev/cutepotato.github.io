@@ -697,7 +697,7 @@
         },
         {
             "p": null,
-            "q": "Radijo ryšiui trukdo perkūnija. Kurią santrumpą vartosite norėdami apie tai pranešti savo",
+            "q": "Radijo ryšiui trukdo perkūnija. Kurią santrumpą vartosite norėdami apie tai pranešti savo korespondentui?",
             "a": [
                 { "key": "QRN.", "correct": true },
                 { "key": "QRS." },
@@ -1047,7 +1047,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B2",
             "q": "Kokia yra atstojamoji varža rezistorių, sujungtų pagal B2 pav., kai R1 = R2 = 50 Ω, R3 = 1000 MΩ?",
             "a": [
                 { "key": "25 Ω." },
@@ -1056,7 +1056,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B2",
             "q": "Kokia yra atstojamoji varža rezistorių, sujungtų pagal B2 pav., kai R1 = 200 Ω, R2 = 400 Ω, R3 = 600 Ω?",
             "a": [
                 { "key": "300 Ω.", "correct": true },
@@ -1065,7 +1065,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B2",
             "q": "Kokia yra atstojamoji varža rezistorių, sujungtų pagal B2 pav., kai R1 = 80 kΩ, R2 = 40 kΩ, R3 = 60 kΩ?",
             "a": [
                 { "key": "40 kΩ.", "correct": true },
@@ -1074,7 +1074,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B2",
             "q": "Kokia yra atstojamoji varža rezistorių, sujungtų pagal B2 pav., kai R1 = 20 kΩ, R2 = 0 kΩ, R3 = 20 kΩ?",
             "a": [
                 { "key": "40 kΩ." },
@@ -1119,7 +1119,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B3",
             "q": "Kokia yra atstojamoji talpa kondensatorių, sujungtų pagal B3 pav., kai C1 = C2 = 200 pF, C3 = 100 pF?",
             "a": [
                 { "key": "50 pF." },
@@ -1128,7 +1128,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B3",
             "q": "Kokia yra atstojamoji talpa kondensatorių, sujungtų pagal B3 pav., kai C1 = 300 pF, C2 = 700 pF, C3 = 390 pF?",
             "a": [
                 { "key": "220 pF." },
@@ -1137,7 +1137,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B3",
             "q": "Kokia yra atstojamoji talpa kondensatorių, sujungtų pagal B3 pav., kai C1=10 nF, C2=90 nF, C3=0 nF?",
             "a": [
                 { "key": "9 nF.", "correct": true },
@@ -1146,7 +1146,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B3",
             "q": "Kokia yra atstojamoji talpa kondensatorių, sujungtų pagal B3 pav., kai C1 = 3,3 μF, C2 = 5 μF, C3 = 10 μF?",
             "a": [
                 { "key": "4,5 μF." },
@@ -1587,7 +1587,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B5",
             "q": "Kuri schema vaizduoja varžos matavimą?",
             "a": [
                 { "key": "B5a." },
@@ -1596,7 +1596,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B5",
             "q": "Kuri schema vaizduoja įtampos matavimą?",
             "a": [
                 { "key": "B5a.", "correct": true },
@@ -1605,7 +1605,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B5",
             "q": "Kuri schema vaizduoja srovės matavimą?",
             "a": [
                 { "key": "B5a." },
@@ -2037,7 +2037,7 @@
             ]
         },
         {
-            "p": null,
+            "p": "B7",
             "q": "Kurį filtrą geriausia įjungti trumpųjų bangų siųstuvo išėjime tam, kad sumažėtų siųstuvo signalų įtaka televizoriaus priimamiems signalams?",
             "a": [
                 { "key": "B7a.", "correct": true },
@@ -2184,8 +2184,8 @@
             "p": null,
             "q": "Turite 2 vienodo ilgio ir tipo skirtingo diametro ašinius kabelius. Kuriame iš jų signalo perdavimo nuostoliai didesni?",
             "a": [
-                { "key": "Plonesniame kabelyje." },
-                { "key": "Storesniame kabelyje.", "correct": true },
+                { "key": "Plonesniame kabelyje.", "correct": true },
+                { "key": "Storesniame kabelyje." },
                 { "key": "Nuostoliai nepriklauso nuo kabelio storio." }
             ]
         },
