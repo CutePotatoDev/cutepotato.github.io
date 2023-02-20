@@ -41,7 +41,23 @@
             document.getElementById("qlist").insertAdjacentHTML("afterbegin", qtext);
         }
 
-        var qdata = undefined
+        function shuffle(arr) {
+            let m = arr.length;
+            let t;
+            let idx;
+
+            while (m) {
+                idx = Math.floor(Math.random() * m);
+                m--;
+
+                t = arr[m];
+                arr[m] = arr[idx];
+                arr[idx] = t;
+            }
+            return arr;
+        }
+
+        var qdata = undefined;
         var qanswers = {};
         var qcount = undefined;
         var qreq = undefined;
@@ -50,12 +66,15 @@
             qcount = data.count;
             qreq = data.correct;
 
-            let questions = data.questions.sort((a, b) => 0.5 - Math.random());
+            let questions = shuffle(data.questions);
+            let offset = Math.floor(Math.random() * (data.questions.length - data.count));
 
             for (let i = data.count; i > 0; i--) {
-                let question = questions[i - 1];
+                let question = questions[offset + i - 1];
 
-                let mixa = question.a.sort((a, b) => 0.5 - Math.random());
+                // Disable answers mixing.
+                //let mixa = question.a.sort((a, b) => 0.5 - Math.random());
+                let mixa = question.a;
                 qadd(i + ". " + question.q, mixa, question.p);
 
                 for (let a in mixa) {
